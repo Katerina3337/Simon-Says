@@ -1,0 +1,88 @@
+body{
+    font-family: "Open Sans";
+}
+#app{
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+}
+.game-wrapper{
+    display: flex;
+    justify-content: space-around;
+}
+.title{
+    text-align: center;
+}
+.game-field{
+    border-radius: 50%;
+}
+.top-row{
+    display: flex;
+}
+.bottom-row{
+    display: flex;
+}
+.color{
+    width: 120px;
+    height: 120px;
+    opacity: 0.4;
+    transition: all, .3s;
+}
+.active{
+    opacity: 1;
+}
+.blue{
+    background-color: blue;
+}
+.red{
+    background-color: red;
+}
+.yellow{
+    background-color: yellow;
+}
+.green{
+    background-color: green;
+}
+.round{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.button{
+    background-color: purple;
+    color: white;
+    width: 70px;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    padding-top: 1px;
+    padding-bottom: 3px;
+}
+.button:hover{
+    background-color: rgb(158, 16, 158);
+}
+.button-start{
+    
+}
+.notification-wrapper{
+    height: 30px;
+    margin: 0;
+    margin-top: 20px;
+}
+.notification{
+    height: 20px;
+    margin: 0;
+    font-size: 12px;
+}
+.level-wrapper{
+    display: flex;
+    flex-direction: column;
+}
+.level{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.level-option{
+    font-size: 15px;
+}

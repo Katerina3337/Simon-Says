@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div id="app">
+        <h1 class="title" @click="foo">Simon Says</h1>
+        <div class="game-wrapper">
+            <div class="game-field">
+                <div class="top-row">
+                    <div class="color blue" :class="{active: activeBlue}" @click=" handleColorClick(audioBlue, 'blue')">
+                    </div>
+                    <div class="color red" :class="{active: activeRed}" @click=" handleColorClick(audioRed, 'red')">
+                    </div>
+                </div>
+                <div class="bottom-row">
+                    <div class="color yellow" :class="{active: activeYellow}"
+                        @click=" handleColorClick(audioYellow, 'yellow')">
+                    </div>
+                    <div class="color green" :class="{active: activeGreen}"
+                        @click=" handleColorClick(audioGreen, 'green')">
+                    </div>
+                </div>
+
+            </div>
+            <div class="description">
+                <h2 class="round">Раунд: {{round}}</h2>
+                <div class="button">
+                    <a class="button-start" @click="start">Старт</a>
+                </div>
+                <div class="notification-wrapper">
+                    <p class="notification" v-if="lostMessage">{{lostMessage}}</p>
+                </div>
+                <h2 class="level">Уровень:</h2>
+                <div class="level-wrapper">
+                    <div class="level-option">
+                        <input type="radio" id="easy_level"  value="1500" v-model="speed">
+                        <label for="easy_level">Легкий уровень</label>
+                    </div>
+                    <div class="level-option">
+                        <input type="radio" id="normal_level" value="1000" v-model="speed">
+                        <label for="normal_level">Средний уровень</label>
+                    </div>
+                    <div class="level-option">
+                        <input type="radio" id="hard_level" value="400" v-model="speed">
+                        <label for="hard_level">Трудный уровень</label>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+
+    <script>
+
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        new Vue({
+            el: "#app",
+            data: {
+                audioBlue: null,
+                audioRed: null,
+                audioYellow: null,
+                audioGreen: null,
+                activeColor: null,
+                colorSequence: [],
+                isSequencePlaying: false,
+                playerPositionInSequence: 0,
+                round: 0,
+                speed: 1500,
+                lostMessage: "",
+            },
+            computed: {
+                activeBlue() {
+                    return this.activeColor === "blue";
+                },
+                activeRed() {
+                    return this.activeColor === "red";
+                },
+                activeYellow() {
+                    return this.activeColor === "yellow";
+                },
+                activeGreen() {
+                    return this.activeColor === "green";
+                },
+            },
+            methods: {
+                activateColor(audio, color) {
+                    audio.load(); // Сбрасывает предыдущую дорожку
+                    audio.play();
+                    this.activeColor = color;
+                    setTimeout(() => {
+                        this.activeColor = null;
+                    }, 300);
+                },
+                foo(colorNumber) {
+                    switch (colorNumber) {
+                        case 0: this.activateColor(this.audioBlue, "blue"); break;
+                        case 1: this.activateColor(this.audioRed, "red"); break;
+                        case 2: this.activateColor(this.audioYellow, "yellow"); break;
+                        case 3: this.activateColor(this.audioGreen, "green"); break;
+                    }
+                },
+                start() {
+                    this.lostMessage = "";
+                    this.changeLevel();
+
+                },
+                changeLevel() {
+                    this.round++;
+                    this.colorSequence.push(getRandomInt(0, 3));
+                    let index = 0;
+                    this.isSequencePlaying = true;
+                    let refreshInterval = setInterval(() => {
+                        this.foo(this.colorSequence[index]);
+                        index++;
+                        if (index >= this.colorSequence.length) {
+                            clearInterval(refreshInterval);
+                            this.isSequencePlaying = false;
+                        }
+
+                    }, parseInt(this.speed));
+                },
+                handleColorClick(audio, color) {
+                    if (this.isSequencePlaying || !this.round) {
+                        return
+                    }
+                    this.activateColor(audio, color);
+                    if (this.getColorPosition(color) === this.colorSequence[this.playerPositionInSequence]) {
+                        console.log('Всё верно');
+                        this.playerPositionInSequence++;
+                    } else {
+                        console.log('Ты проиграл');
+                        this.lostMessage = "Вы проиграли на раунде " + this.round;
+                        this.playerPositionInSequence = 0;
+                        this.colorSequence = [];
+                        this.round = 0;
+                        return;
+                    }
+
+                    if (this.playerPositionInSequence === this.colorSequence.length) {
+                        this.changeLevel();
+                        this.playerPositionInSequence = 0;
+                    }
+                },
+                getColorPosition(color) {
+                    switch (color) {
+                        case "blue": return 0; break;
+                        case "red": return 1; break;
+                        case "yellow": return 2; break;
+                        case "green": return 3; break;
+                    }
+                }
+            },
+            mounted() {
+                this.audioBlue = new Audio('sounds/1.mp3');
+                this.audioRed = new Audio('sounds/2.mp3');
+                this.audioYellow = new Audio('sounds/3.mp3');
+                this.audioGreen = new Audio('sounds/4.mp3');
+            },
+        })
+    </script>
+
+
+</body>
+
+</html>
