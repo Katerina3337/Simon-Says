@@ -149,10 +149,8 @@
                     }
                     this.activateColor(audio, color);
                     if (this.getColorPosition(color) === this.colorSequence[this.playerPositionInSequence]) {
-                        console.log('Всё верно');
                         this.playerPositionInSequence++;
                     } else {
-                        console.log('Ты проиграл');
                         this.lostMessage = "Вы проиграли на раунде " + this.round;
                         this.playerPositionInSequence = 0;
                         this.colorSequence = [];

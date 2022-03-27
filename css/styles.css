@@ -17,6 +17,7 @@ body{
 }
 .game-field{
     border-radius: 50%;
+    overflow: hidden;
 }
 .top-row{
     display: flex;
@@ -61,9 +62,6 @@ body{
 }
 .button:hover{
     background-color: rgb(158, 16, 158);
-}
-.button-start{
-    
 }
 .notification-wrapper{
     height: 30px;
